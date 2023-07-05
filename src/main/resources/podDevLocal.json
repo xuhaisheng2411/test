@@ -1,0 +1,16 @@
+[
+	{
+		"configId":"corepool",
+		"name":"corepool",
+		"area":"default",
+		"handle":"corepool",
+		"poolConfig":{
+			"name":"corepool",
+			"corePoolSize":1000,
+			"maxPoolSize":10000,
+			"keepAliveSeconds":30,		
+			"queueCapacity":5000,
+			"allowCoreThreadTimeOut":false		
+		}
+	}
+]

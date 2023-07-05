@@ -1,0 +1,94 @@
+server:
+  port: 9999
+eureka:
+  instance:
+    ip-address: 127.0.0.1
+    prefer-ip-address: true
+  client: 
+    enabled: false
+    service-url: 
+      defaultZone: http://admin:admin123@10.12.41.1:9090/eureka/
+apaas:
+  service:
+    id: APAAS_ACS
+    name: automation core service
+spring:
+  application:
+    name: apaas-acs
+  datasource:
+    url: jdbc:oracle:thin:@10.12.41.5:1521:helowin
+    username: cmdb
+    password: cmdb
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    tomcat:
+      max-idle: 10
+      max-wait: 10000
+      min-idle: 5
+      initial-size: 5
+      validation-query: SELECT 1 from dual
+      test-on-borrow: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      jdbc-interceptors: ConnectionState;SlowQueryReport(threshold=0)
+  redis: 
+    host: 10.12.41.6
+    port: 6379
+    password: cmdb123
+    database: 0
+    timeout: 12000
+    sentinel:
+      master: mymaster
+      nodes: 10.12.41.5:26379,10.12.41.6:26379,10.12.41.7:26379
+    pool:
+      max-active: 10000
+      max-idle: 100
+      min-idle: 5
+      max-wait: 60000
+  session:
+     store-type: redis
+  kafka:
+    bootstrap-servers: 10.12.41.7:9092,10.12.41.6:9092,10.12.41.5:9092
+    producer:
+      retries: 1
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer: 
+      group-id: apaas
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      auto-commit-interval: 100
+      max-poll-records: 500
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer   
+    listener:
+      type: batch
+      concurrency: 24    #分区数/client服务节点数     
+apaasConfig:
+  acs:
+    podProfile: podDevLocal.json
+logging:
+  level:
+    root: info
+  file: ./log/${spring.application.name}.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    shutdown:
+      enabled: true
+netty:
+  websocket:
+    # Websocket服务端口
+    port: 1024
+    # 绑定的网卡
+    ip: 0.0.0.0
+    # 消息帧最大体积
+    max-frame-size: 10240
+    # URI路径
+    path: /channel
